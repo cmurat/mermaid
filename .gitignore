@@ -8,6 +8,8 @@
 *.war
 *.ear
 *.iwl
+*.iws
+*.ipr
 *.idea
 *.iml
 *~
