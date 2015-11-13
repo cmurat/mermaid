@@ -1,7 +1,7 @@
 package com.cm;
 
 import com.cm.bootstrap.configuration.MermaidProperties;
-import com.cm.bootstrap.processors.CassandraAnnotationProcessor;
+import com.cm.bootstrap.processors.persistance.JPAPersistanceProcessor;
 import com.cm.cassandra.persistence.CassandraPersistenceContext;
 import com.cm.cassandra.persistence.model.Keyspace;
 
@@ -19,7 +19,7 @@ public class Mermaid {
     }
 
     public CassandraPersistenceContext initializeContextWithProperties(MermaidProperties properties) {
-        Keyspace keyspace = CassandraAnnotationProcessor.processPersistanceAnnotations(properties.getProperty(MermaidProperties.BASE_PACKAGE));
+        Keyspace keyspace = JPAPersistanceProcessor.processPersistanceAnnotations(properties.getProperty(MermaidProperties.BASE_PACKAGE));
         CassandraPersistenceContext context = new CassandraPersistenceContext(properties, keyspace);
         context.init();
 

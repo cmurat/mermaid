@@ -7,7 +7,7 @@ import java.util.List;
  * Created by Çelebi Murat on 09/11/15.
  */
 public class Table {
-    private String keyspace;
+    private Keyspace keyspace;
     private String name;
     private Class mappignObject;
     private List<Column> columns;
@@ -41,11 +41,11 @@ public class Table {
         this.name = name;
     }
 
-    public String getKeyspace() {
+    public Keyspace getKeyspace() {
         return keyspace;
     }
 
-    public void setKeyspace(String keyspace) {
+    public void setKeyspace(Keyspace keyspace) {
         this.keyspace = keyspace;
     }
 
