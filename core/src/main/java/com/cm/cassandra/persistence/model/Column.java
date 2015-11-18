@@ -8,6 +8,7 @@ public class Column {
     private Class mappingObject;
     private Table table;
     private String definitionString;
+    private boolean primaryKey;
 
     public Table getTable() {
         return table;
@@ -39,5 +40,13 @@ public class Column {
 
     public void setDefinitionString(String definitionString) {
         this.definitionString = definitionString;
+    }
+
+    public boolean isPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(boolean primaryKey) {
+        this.primaryKey = primaryKey;
     }
 }

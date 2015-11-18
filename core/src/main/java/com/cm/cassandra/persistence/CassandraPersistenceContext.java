@@ -2,6 +2,7 @@ package com.cm.cassandra.persistence;
 
 import com.cm.bootstrap.configuration.MermaidProperties;
 import com.cm.cassandra.persistence.model.Keyspace;
+import com.cm.cassandra.persistence.model.Table;
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.policies.*;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -136,6 +138,15 @@ public class CassandraPersistenceContext {
         };
     }
 
+    public void createTablesIfNeeded() {
+        List<Table> tables = keyspace.getTables();
+
+        for (Table table : tables) {
+            log.debug("Creating table ith definition : {}", table.getDefinitionString());
+            execute(table.getDefinitionString());
+        }
+    }
+
     public ResultSet execute(Statement statement) {
         return session.execute(statement);
     }
@@ -148,11 +159,24 @@ public class CassandraPersistenceContext {
         return session.execute(statement, values);
     }
 
-    public PreparedStatement bind(String statement) {
+    public PreparedStatement prepare(String statement) {
         return session.prepare(statement);
     }
 
-    public PreparedStatement bind(RegularStatement statement) {
+    public PreparedStatement prepare(RegularStatement statement) {
         return session.prepare(statement);
+    }
+
+    public Keyspace getKeyspace() {
+        return keyspace;
+    }
+
+    public void setKeyspace(Keyspace keyspace) {
+        this.keyspace = keyspace;
+    }
+
+    public void destroy() {
+        session.close();
+        cluster.close();
     }
 }

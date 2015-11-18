@@ -1,14 +1,15 @@
 package com.cm.bootstrap.processors.persistance;
 
+import com.cm.bootstrap.annotations.annotation.PrimaryKey;
 import com.cm.bootstrap.util.BootstrapUtil;
 import com.cm.bootstrap.util.Queries;
 import com.cm.cassandra.persistence.model.Column;
-import com.cm.cassandra.persistence.types.CqlType;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.cm.cassandra.persistence.model.Table;
+import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.CollectionTable;
 import java.beans.Transient;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,37 +17,44 @@ import java.util.List;
  */
 public class ColumnProcessor {
 
-    public static List<Column> process(Class type) {
+    public static List<Column> process(Class type, Table table) {
         Field[] fields = type.getDeclaredFields();
 
+        List<Column> columns = new ArrayList<>();
         for (Field field : fields) {
             if(field.isAnnotationPresent(Transient.class)) {
                 continue;
             }
 
-            Column column = new Column();
-
             if(field.isAnnotationPresent(javax.persistence.Column.class)) {
                 javax.persistence.Column jxColumn = BootstrapUtil.findAnnotation(field, javax.persistence.Column.class);
+                Column column = processColumnWithAnnotation(jxColumn, field);
+                column.setTable(table);
+
+                if(field.isAnnotationPresent(PrimaryKey.class)) {
+                    column.setPrimaryKey(true);
+                }
+
+                columns.add(column);
             }
         }
 
-        return null;
+        return columns;
     }
 
-    private static Column processColumn(Column column, javax.persistence.Column jxColumn, Field field) {
-        String fieldName = field.getType().getSimpleName();
+    private static Column processColumnWithAnnotation(javax.persistence.Column jxColumn, Field field) {
+        Column column = new Column();
+        String fieldName = field.getName();
         String columnName;
-        if(!jxColumn.name().equals("")) {
+        if(StringUtils.isNotEmpty(jxColumn.name())) {
             columnName = jxColumn.name();
         } else {
             columnName = BootstrapUtil.resolveName(fieldName);
         }
-
-
+        column.setMappingObject(field.getType());
         column.setName(columnName);
         column.setDefinitionString(Queries.getColumnDefinition(columnName, jxColumn, field));
 
-        return null;
+        return column;
     }
 }

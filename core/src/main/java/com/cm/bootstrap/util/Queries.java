@@ -1,8 +1,10 @@
 package com.cm.bootstrap.util;
 
+import com.cm.bootstrap.annotations.annotation.Keyspace;
 import com.cm.cassandra.persistence.model.Column;
 import com.cm.cassandra.persistence.model.Table;
 import com.cm.cassandra.persistence.types.CqlType;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
  */
 public class Queries {
     private static final String CREATE_TABLE_IF_NOT_EXISTS = " CREATE TABLE IF NOT EXISTS ";
+    private static final String CREATE_KEYSPACE = " CREATE KEYSPACE ";
     private static final String PRIMARY_KEY = " PRIMARY KEY ";
     private static final String STATIC = " STATIC ";
 
@@ -20,25 +23,33 @@ public class Queries {
     private static final String BLOCK_END = ")";
 
     private static final String WITH = " WITH ";
+    private static final String REPLICATION = " REPLICATION ";
     private static final String CLUSTRING_ORDER_BY = " CLUSTRING ORDER BY ";
     private static final String COMPACT_STORAGE = " COMPACT STORAGE ";
 
     public static String getTableDefinition(Table table) {
         String definition = CREATE_TABLE_IF_NOT_EXISTS + table.getKeyspace().getName() + "." + table.getName();
+        String primaryKeyDefinition = PRIMARY_KEY + BLOCK_START;
         definition += BLOCK_START;
         List<Column> columns = table.getColumns();
+
         for (Column column : columns) {
-            definition += column.getDefinitionString() + COLUMN_DEF_SEPARATOR;
+            definition = StringUtils.join(definition, column.getDefinitionString(), COLUMN_DEF_SEPARATOR);
+
+            if (column.isPrimaryKey()) {
+                primaryKeyDefinition += column.getName();
+            }
         }
-        definition += BLOCK_END;
+        primaryKeyDefinition += BLOCK_END;
+        definition += primaryKeyDefinition + BLOCK_END;
 
         return definition;
     }
 
     public static String getColumnDefinition(String columnName, javax.persistence.Column jxColumn, Field field) {
         String definitionString = "";
-        if(jxColumn.columnDefinition() != null) {
-            definitionString = jxColumn.columnDefinition();
+        if(StringUtils.isNotEmpty(jxColumn.columnDefinition())) {
+            definitionString = columnName.concat(" ").concat(jxColumn.columnDefinition());
             if(definitionString.endsWith(".") || definitionString.endsWith(";") || definitionString.endsWith(";")) {
                 definitionString.substring(0, definitionString.length() - 1);
             }
@@ -49,5 +60,4 @@ public class Queries {
 
         return definitionString;
     }
-
 }

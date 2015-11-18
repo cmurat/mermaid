@@ -4,6 +4,8 @@ import com.cm.bootstrap.configuration.MermaidProperties;
 import com.cm.bootstrap.processors.persistance.JPAPersistanceProcessor;
 import com.cm.cassandra.persistence.CassandraPersistenceContext;
 import com.cm.cassandra.persistence.model.Keyspace;
+import com.cm.exception.MermaidCoreException;
+import com.cm.exception.MultipleKeyspaceException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +20,12 @@ public class Mermaid {
 
     }
 
-    public CassandraPersistenceContext initializeContextWithProperties(MermaidProperties properties) {
+    public CassandraPersistenceContext initializeContextWithProperties(MermaidProperties properties) throws MermaidCoreException {
         Keyspace keyspace = JPAPersistanceProcessor.processPersistanceAnnotations(properties.getProperty(MermaidProperties.BASE_PACKAGE));
         CassandraPersistenceContext context = new CassandraPersistenceContext(properties, keyspace);
         context.init();
+
+        contexts.put(keyspace.getName(), context);
 
         return context;
     }
