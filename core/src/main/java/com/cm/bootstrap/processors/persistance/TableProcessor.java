@@ -2,8 +2,8 @@ package com.cm.bootstrap.processors.persistance;
 
 import com.cm.bootstrap.util.BootstrapUtil;
 import com.cm.bootstrap.util.Queries;
-import com.cm.cassandra.persistence.model.Keyspace;
-import com.cm.cassandra.persistence.model.Table;
+import com.cm.cassandra.persistence.model.element.Keyspace;
+import com.cm.cassandra.persistence.model.element.Table;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;

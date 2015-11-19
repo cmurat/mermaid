@@ -1,10 +1,11 @@
 package com.cm.cassandra.persistence;
 
 import com.cm.bootstrap.configuration.MermaidProperties;
-import com.cm.cassandra.persistence.model.Keyspace;
-import com.cm.cassandra.persistence.model.Table;
+import com.cm.cassandra.persistence.model.element.Keyspace;
+import com.cm.cassandra.persistence.model.element.Table;
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.policies.*;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -178,5 +179,9 @@ public class CassandraPersistenceContext {
     public void destroy() {
         session.close();
         cluster.close();
+    }
+
+    public Session getSession() {
+        return session;
     }
 }

@@ -1,4 +1,4 @@
-package com.cm.cassandra.persistence.model;
+package com.cm.cassandra.persistence.model.element;
 
 /**
  * Created by Çelebi Murat on 09/11/15.

@@ -3,9 +3,8 @@ package com.cm;
 import com.cm.bootstrap.configuration.MermaidProperties;
 import com.cm.bootstrap.processors.persistance.JPAPersistanceProcessor;
 import com.cm.cassandra.persistence.CassandraPersistenceContext;
-import com.cm.cassandra.persistence.model.Keyspace;
+import com.cm.cassandra.persistence.model.element.Keyspace;
 import com.cm.exception.MermaidCoreException;
-import com.cm.exception.MultipleKeyspaceException;
 
 import java.util.HashMap;
 import java.util.Map;

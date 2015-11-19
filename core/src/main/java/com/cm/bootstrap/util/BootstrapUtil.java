@@ -1,6 +1,7 @@
 package com.cm.bootstrap.util;
 
 import javafx.scene.effect.Reflection;
+import org.apache.commons.lang3.StringUtils;
 import org.reflections.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
@@ -33,5 +34,9 @@ public class BootstrapUtil {
             return (A) annotation;
         }
         return null;
+    }
+
+    public static String replaceLastOccurance(String string, String searchString, String replaceString) {
+        return new StringBuilder(string).replace(string.lastIndexOf(searchString), string.lastIndexOf(searchString) + searchString.length(), replaceString).toString();
     }
 }

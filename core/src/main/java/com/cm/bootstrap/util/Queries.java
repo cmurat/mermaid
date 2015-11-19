@@ -1,9 +1,8 @@
 package com.cm.bootstrap.util;
 
-import com.cm.bootstrap.annotations.annotation.Keyspace;
-import com.cm.cassandra.persistence.model.Column;
-import com.cm.cassandra.persistence.model.Table;
-import com.cm.cassandra.persistence.types.CqlType;
+import com.cm.cassandra.persistence.model.element.Column;
+import com.cm.cassandra.persistence.model.element.Table;
+import com.cm.cassandra.persistence.types.ColumnData;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
@@ -54,8 +53,9 @@ public class Queries {
                 definitionString.substring(0, definitionString.length() - 1);
             }
         } else {
-            CqlType cqlType = CqlType.getByJavaCanonicalName(field.getType().getCanonicalName());
-            definitionString = definitionString.concat(columnName).concat(" ").concat(cqlType.name());
+            ColumnData data = new ColumnData().initWithFieldGenericType(field.getGenericType());
+
+//            definitionString = definitionString.concat(columnName).concat(" ").concat(cqlType.name());
         }
 
         return definitionString;

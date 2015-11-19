@@ -3,8 +3,8 @@ package com.cm.bootstrap.processors.persistance;
 import com.cm.bootstrap.annotations.annotation.PrimaryKey;
 import com.cm.bootstrap.util.BootstrapUtil;
 import com.cm.bootstrap.util.Queries;
-import com.cm.cassandra.persistence.model.Column;
-import com.cm.cassandra.persistence.model.Table;
+import com.cm.cassandra.persistence.model.element.Column;
+import com.cm.cassandra.persistence.model.element.Table;
 import org.apache.commons.lang3.StringUtils;
 
 import java.beans.Transient;

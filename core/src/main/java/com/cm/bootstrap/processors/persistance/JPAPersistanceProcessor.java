@@ -1,6 +1,6 @@
 package com.cm.bootstrap.processors.persistance;
 
-import com.cm.cassandra.persistence.model.Keyspace;
+import com.cm.cassandra.persistence.model.element.Keyspace;
 import com.cm.exception.MultipleKeyspaceException;
 import org.reflections.Reflections;
 

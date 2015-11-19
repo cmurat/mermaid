@@ -1,4 +1,7 @@
-package com.cm.cassandra.persistence.model;
+package com.cm.cassandra.persistence.model.element;
+
+import com.cm.cassandra.persistence.model.element.Column;
+import com.cm.cassandra.persistence.model.element.Keyspace;
 
 import java.util.ArrayList;
 import java.util.List;

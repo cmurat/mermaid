@@ -1,4 +1,4 @@
-package com.cm.cassandra.persistence.model;
+package com.cm.cassandra.persistence.model.element;
 
 import java.util.ArrayList;
 import java.util.List;
