@@ -55,7 +55,7 @@ public class Queries {
         } else {
             ColumnData data = new ColumnData().initWithFieldGenericType(field.getGenericType());
 
-//            definitionString = definitionString.concat(columnName).concat(" ").concat(cqlType.name());
+            definitionString = definitionString.concat(columnName).concat(" ").concat(cqlType.name());
         }
 
         return definitionString;
