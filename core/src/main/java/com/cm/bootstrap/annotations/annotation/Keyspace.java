@@ -15,5 +15,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Keyspace {
     String name();
-    Class[] tables();
+    Class[] entities();
 }

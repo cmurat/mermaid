@@ -1,30 +1,27 @@
 package com.cm;
 
 import com.cm.bootstrap.configuration.MermaidProperties;
-import com.cm.bootstrap.processors.persistance.JPAPersistanceProcessor;
+import com.cm.bootstrap.processors.persistance.AnnotationProcessorManager;
 import com.cm.cassandra.persistence.CassandraPersistenceContext;
 import com.cm.cassandra.persistence.model.element.Keyspace;
 import com.cm.exception.MermaidCoreException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Çelebi Murat on 09/11/15.
  */
 public class Mermaid {
-    private Map<String, CassandraPersistenceContext> contexts = new HashMap<>();
 
-    public Mermaid() {
-
-    }
+    private List<CassandraPersistenceContext> contexts = new ArrayList<>();
 
     public CassandraPersistenceContext initializeContextWithProperties(MermaidProperties properties) throws MermaidCoreException {
-        Keyspace keyspace = JPAPersistanceProcessor.processPersistanceAnnotations(properties.getProperty(MermaidProperties.BASE_PACKAGE));
-        CassandraPersistenceContext context = new CassandraPersistenceContext(properties, keyspace);
+        CassandraPersistenceContext context = new CassandraPersistenceContext(properties);
         context.init();
-
-        contexts.put(keyspace.getName(), context);
+        contexts.add(context);
 
         return context;
     }

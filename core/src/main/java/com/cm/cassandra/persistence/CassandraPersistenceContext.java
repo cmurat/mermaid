@@ -1,18 +1,21 @@
 package com.cm.cassandra.persistence;
 
 import com.cm.bootstrap.configuration.MermaidProperties;
+import com.cm.bootstrap.processors.persistance.AnnotationProcessorManager;
+import com.cm.bootstrap.processors.persistance.EntityProcessor;
+import com.cm.bootstrap.processors.persistance.KeyspaceProcessor;
 import com.cm.cassandra.persistence.model.element.Keyspace;
 import com.cm.cassandra.persistence.model.element.Table;
+import com.cm.exception.AnnotationsNotProcessedException;
+import com.cm.exception.MermaidCoreException;
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.policies.*;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +27,7 @@ public class CassandraPersistenceContext {
     @Nullable
     private static Logger log = LoggerFactory.getLogger(CassandraPersistenceContext.class);
 
-    private final MermaidProperties properties;
+    public final MermaidProperties properties;
 
     private Cluster cluster;
 
@@ -32,12 +35,24 @@ public class CassandraPersistenceContext {
 
     private Keyspace keyspace;
 
-    public CassandraPersistenceContext(MermaidProperties properties, Keyspace keyspace) {
+    private AnnotationProcessorManager processorManager;
+
+    public CassandraPersistenceContext(MermaidProperties properties) {
         this.properties = properties;
-        this.keyspace = keyspace;
+        this.processorManager = new AnnotationProcessorManager(this);
     }
 
     public void init() {
+        registerProcessors();
+        initializeDBConnection();
+    }
+
+    private void registerProcessors() {
+        processorManager.registerProcessor(new KeyspaceProcessor());
+        processorManager.registerProcessor(new EntityProcessor());
+    }
+
+    private void initializeDBConnection() {
         String nodes = properties.getProperty(MermaidProperties.NODES);
         String username = properties.getProperty(MermaidProperties.USERNAME);
         String password = properties.getProperty(MermaidProperties.PASSWORD);
@@ -139,11 +154,17 @@ public class CassandraPersistenceContext {
         };
     }
 
-    public void createTablesIfNeeded() {
-        List<Table> tables = keyspace.getTables();
+    public void startProcessing() throws MermaidCoreException {
+        processorManager.process();
+        keyspace = processorManager.getKeyspace();
+    }
 
-        for (Table table : tables) {
-            log.debug("Creating table ith definition : {}", table.getDefinitionString());
+    public void createTablesIfNeeded() throws AnnotationsNotProcessedException {
+        if (keyspace == null) {
+            throw new AnnotationsNotProcessedException();
+        }
+        for (Table table : keyspace.getTables()) {
+            log.debug("Creating table with definition : {}", table.getDefinitionString());
             execute(table.getDefinitionString());
         }
     }
@@ -168,14 +189,6 @@ public class CassandraPersistenceContext {
         return session.prepare(statement);
     }
 
-    public Keyspace getKeyspace() {
-        return keyspace;
-    }
-
-    public void setKeyspace(Keyspace keyspace) {
-        this.keyspace = keyspace;
-    }
-
     public void destroy() {
         session.close();
         cluster.close();
@@ -183,5 +196,9 @@ public class CassandraPersistenceContext {
 
     public Session getSession() {
         return session;
+    }
+
+    public Keyspace getKeyspace() {
+        return keyspace;
     }
 }

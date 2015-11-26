@@ -47,7 +47,7 @@ public class Queries {
 
     public static String getColumnDefinition(String columnName, javax.persistence.Column jxColumn, Field field) {
         String definitionString = "";
-        if(StringUtils.isNotEmpty(jxColumn.columnDefinition())) {
+        if(jxColumn != null && StringUtils.isNotEmpty(jxColumn.columnDefinition())) {
             definitionString = columnName.concat(" ").concat(jxColumn.columnDefinition());
             if(definitionString.endsWith(".") || definitionString.endsWith(";") || definitionString.endsWith(";")) {
                 definitionString.substring(0, definitionString.length() - 1);
